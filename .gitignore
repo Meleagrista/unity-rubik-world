@@ -104,3 +104,10 @@ InitTestScene*.unity*
 
 # Auto-generated cache in Assets folder
 /[Aa]ssets/[Ss]ceneDependencyCache*
+Rubik's World/.vsconfig
+Rubik's World/AGENTS.md
+/Rubik's World/Temp
+/Rubik's World/UserSettings
+/Rubik's World/Packages
+/Rubik's World/obj
+/Rubik's World/Library
