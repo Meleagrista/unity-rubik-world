@@ -6,20 +6,30 @@ public class Pawn : MonoBehaviour
 
     private void Start()
     {
-        transform.position = _currentTile.GetPosition();
+        MoveTo(_currentTile);
     }
 
     public void Move(Direction direction)
     {
-        Tile _nextTile = _currentTile.GetTile(direction);
+        Tile _nextTile = _currentTile.GetAdjacentTile(direction);
 
         if (_nextTile == null)
         {
             return;
         }
 
-        transform.position = _nextTile.GetPosition();
+        MoveTo(_nextTile);
 
         _currentTile = _nextTile;
+    }
+
+    private void MoveTo(Tile tile)
+    {
+        Transform tileTransform = tile.GetPosition();
+
+        transform.position = tileTransform.position;
+        transform.rotation = tileTransform.rotation;
+
+        tile.SetVisited();
     }
 }
