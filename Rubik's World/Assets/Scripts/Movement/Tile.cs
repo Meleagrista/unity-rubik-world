@@ -1,33 +1,22 @@
 using System;
 using UnityEngine;
 
-public enum State { FREE, OCCUPIED }
-
 public class Tile : MonoBehaviour
 {
     [Header("Properties")]
-    [SerializeField] private State state;
     [SerializeField] private bool isVisited = false;
     [SerializeField] private Transform position;
 
     [Header("Neighbors")]
-    [SerializeField] private Tile up;
-    [SerializeField] private Tile down;
+    [SerializeField] private Tile forward;
+    [SerializeField] private Tile backward;
     [SerializeField] private Tile left;
     [SerializeField] private Tile right;
 
     [Header("Feedback")]
     [SerializeField] private Material visitedMaterial;
 
-    // public void SetState(State newState) { state = newState; }
-
-    public void SetVisited() 
-    { 
-        isVisited = true;
-        UpdateTile();
-    }
-
-    // public State GetState() => state;
+    public void SetVisited() { isVisited = true; }
 
     public bool GetVisited() => isVisited;
 
@@ -36,19 +25,23 @@ public class Tile : MonoBehaviour
 
     /* PAWN FUNCTIONS */
 
-    public Tile GetAdjacentTile(Direction direction)
+    public Tile GetNextTile(Vector3 pawnDirection)
     {
-        switch (direction)
-        {
-            case Direction.UP: return up;
-            case Direction.DOWN: return down;
-            case Direction.RIGHT: return right;
-            case Direction.LEFT: return left;
-            default:
-                break;
-        }
+        Direction tileDirection = DirectionExtensions.From3DVectors(transform.forward, transform.up, pawnDirection);
 
-        throw new NotSupportedException("The direction was not recognized.");
+        switch (tileDirection)
+        {
+            case Direction.FORWARD:
+                return forward;
+            case Direction.BACKWARD:
+                return backward;
+            case Direction.LEFT:
+                return left;
+            case Direction.RIGHT:
+                return right;
+            default:
+                throw new NotImplementedException("Switch statemente cannot process unknonw direction.");
+        }
     }
 
     /* CUBE FUNCTIONS */
@@ -56,6 +49,11 @@ public class Tile : MonoBehaviour
     [ContextMenu("Detect")]
     public void DetectAdjacentTiles()
     {
+        forward = null;
+        backward = null;
+        right = null;
+        left = null;
+
         var directions = Enum.GetValues(typeof(Direction));
         foreach (Direction direction in directions)
         {
@@ -68,13 +66,15 @@ public class Tile : MonoBehaviour
         RaycastHit hit;
 
         Ray ray;
+        Color color = Color.white;
 
         switch (direction)
         {
-            case Direction.UP: 
-                ray = new Ray(transform.position, transform.forward); 
+            case Direction.FORWARD: 
+                ray = new Ray(transform.position, transform.forward);
+                color = Color.red;
                 break;
-            case Direction.DOWN:
+            case Direction.BACKWARD:
                 ray = new Ray(transform.position, -transform.forward);
                 break;
             case Direction.RIGHT:
@@ -82,12 +82,13 @@ public class Tile : MonoBehaviour
                 break;
             case Direction.LEFT:
                 ray = new Ray(transform.position, -transform.right);
+                color = Color.blue;
                 break;
             default:
                 throw new NotSupportedException("The direction was not recognized.");
         }
 
-        Debug.DrawRay(ray.origin, ray.direction * 2, Color.red, 1);
+        Debug.DrawRay(ray.origin, ray.direction * 2, color, 1);
 
         if (Physics.Raycast(ray, out hit, 2))
         {
@@ -95,11 +96,11 @@ public class Tile : MonoBehaviour
 
             switch (direction)
             {
-                case Direction.UP:
-                    up = tile;
+                case Direction.FORWARD:
+                    forward = tile;
                     break;
-                case Direction.DOWN:
-                    down = tile;
+                case Direction.BACKWARD:
+                    backward = tile;
                     break;
                 case Direction.RIGHT:
                     right = tile;
