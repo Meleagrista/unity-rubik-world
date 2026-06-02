@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class DirectionGizmo : MonoBehaviour
+public class DirectionsGizmo : MonoBehaviour
 {
     [SerializeField] private bool showGizmo = false;
 

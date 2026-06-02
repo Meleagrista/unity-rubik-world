@@ -29,6 +29,8 @@ public class Camera : MonoBehaviour
         {
             m_originRotation = transform.rotation;
             m_rotationStart = -1.0f;
+
+            EventManager.TriggerEvent(Event.CAMERA_ANIMATION_EVENT, null);
         }
     }
 
@@ -37,6 +39,8 @@ public class Camera : MonoBehaviour
         m_originRotation = transform.rotation;
         m_targetRotation = rotation;
         m_rotationStart = Time.time;
+
+        EventManager.TriggerEvent(Event.CAMERA_ANIMATION_EVENT, null);
     }
 
 }

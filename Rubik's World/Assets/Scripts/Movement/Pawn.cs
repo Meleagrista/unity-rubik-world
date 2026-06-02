@@ -13,8 +13,7 @@ public class Pawn : MonoBehaviour
 
         if(k_camera == null)
         {
-            Debug.LogError("No camera was found");
-            throw new MissingComponentException();
+            throw new MissingComponentException("The player couldn't find no camera component!");
         }
 
         MovePawn(_currentTile);
@@ -62,9 +61,13 @@ public class Pawn : MonoBehaviour
     }
     private void MovePawn(Tile tile)
     {
+        EventManager.TriggerEvent(Event.PAWN_ANIMATION_EVENT, null);
+
         Transform tileTransform = tile.GetPosition();
         
         transform.position = tileTransform.position;
+
+        EventManager.TriggerEvent(Event.PAWN_ANIMATION_EVENT, null);
     }
 
     private void RotatePawn(Tile tile, Direction direction)
@@ -75,8 +78,10 @@ public class Pawn : MonoBehaviour
         Quaternion cornerRotation = Quaternion.FromToRotation(currentNormal, nextNormal);
         Quaternion pawnRotation = cornerRotation * transform.rotation;
 
-        transform.rotation = pawnRotation;
-
-        k_camera.RotateCamera(pawnRotation);
+        if (transform.rotation != pawnRotation)
+        {
+            transform.rotation = pawnRotation;
+            k_camera.RotateCamera(pawnRotation);
+        }
     }
 }
