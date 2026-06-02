@@ -5,9 +5,22 @@ public class Pawn : MonoBehaviour
 {
     [SerializeField] private Tile _currentTile;
 
+    private Camera k_camera;
+
     private void Start()
     {
+        k_camera = FindFirstObjectByType<Camera>();
+
+        if(k_camera == null)
+        {
+            Debug.LogError("No camera was found");
+            throw new MissingComponentException();
+        }
+
         MovePawn(_currentTile);
+
+        _currentTile.SetVisited();
+        _currentTile.UpdateTile();
     }
 
     public void Move(Direction direction)
@@ -60,7 +73,10 @@ public class Pawn : MonoBehaviour
         Vector3 nextNormal = tile.GetPosition().transform.up;
 
         Quaternion cornerRotation = Quaternion.FromToRotation(currentNormal, nextNormal);
+        Quaternion pawnRotation = cornerRotation * transform.rotation;
 
-        transform.rotation = cornerRotation * transform.rotation;
+        transform.rotation = pawnRotation;
+
+        k_camera.RotateCamera(pawnRotation);
     }
 }
