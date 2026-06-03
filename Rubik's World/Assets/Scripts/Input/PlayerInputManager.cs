@@ -6,14 +6,14 @@ public class PlayerInputManager : MonoBehaviour
     [Header("Input References")]
     [SerializeField] private InputActionReference _moveAction;
 
-    private Pawn k_pawn;
+    private PawnController k_pawn;
 
     private bool m_pawnIsLocked = false;
     private bool m_cameraIsLocked = false;
 
     private void Awake()
     {
-        k_pawn = GetComponent<Pawn>();
+        k_pawn = GetComponent<PawnController>();
 
         if(k_pawn == null )
         {

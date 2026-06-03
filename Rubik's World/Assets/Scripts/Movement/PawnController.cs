@@ -1,15 +1,15 @@
 using System;
 using UnityEngine;
 
-public class Pawn : MonoBehaviour
+public class PawnController : MonoBehaviour
 {
     [SerializeField] private Tile _currentTile;
 
-    private Camera k_camera;
+    private CameraController k_camera;
 
     private void Start()
     {
-        k_camera = FindFirstObjectByType<Camera>();
+        k_camera = FindFirstObjectByType<CameraController>();
 
         if(k_camera == null)
         {

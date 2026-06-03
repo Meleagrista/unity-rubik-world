@@ -1,6 +1,7 @@
+using System.Collections;
 using UnityEngine;
 
-public class Camera : MonoBehaviour
+public class CameraController : MonoBehaviour
 {
     [SerializeField] private float rotationSpeed = 2.0f;
 
@@ -15,18 +16,20 @@ public class Camera : MonoBehaviour
         m_targetRotation = transform.rotation;
     }
 
-    private void Update()
+    private IEnumerator Rotate()
     {
-        if (m_originRotation == m_targetRotation || m_rotationStart < 0)
+        if (!(m_originRotation == m_targetRotation || m_rotationStart < 0))
         {
-            return;
-        }
+            EventManager.TriggerEvent(Event.CAMERA_ANIMATION_EVENT, null);
 
-        float t = (Time.time - m_rotationStart) * rotationSpeed;
-        transform.rotation = Quaternion.Slerp(m_originRotation, m_targetRotation, t);
+            while (transform.rotation != m_targetRotation)
+            {
+                float t = (Time.time - m_rotationStart) * rotationSpeed;
+                transform.rotation = Quaternion.Slerp(m_originRotation, m_targetRotation, t);
 
-        if (transform.rotation == m_targetRotation)
-        {
+                yield return null;
+            }
+
             m_originRotation = transform.rotation;
             m_rotationStart = -1.0f;
 
@@ -40,7 +43,7 @@ public class Camera : MonoBehaviour
         m_targetRotation = rotation;
         m_rotationStart = Time.time;
 
-        EventManager.TriggerEvent(Event.CAMERA_ANIMATION_EVENT, null);
+        StartCoroutine(Rotate());
     }
 
 }
