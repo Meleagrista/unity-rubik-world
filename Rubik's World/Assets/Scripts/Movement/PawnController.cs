@@ -81,7 +81,7 @@ public class PawnController : MonoBehaviour
         if (transform.rotation != pawnRotation)
         {
             transform.rotation = pawnRotation;
-            k_camera.RotateCamera(pawnRotation);
+            k_camera.RotateTowards(pawnRotation);
         }
     }
 }

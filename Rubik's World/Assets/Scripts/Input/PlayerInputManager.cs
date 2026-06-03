@@ -23,7 +23,8 @@ public class PlayerInputManager : MonoBehaviour
         _moveAction.action.performed += OnMovePerformed;
         _moveAction.action.canceled += OnMoveCanceled;
 
-        EventManager.StartListening(Event.CAMERA_ANIMATION_EVENT, OnCameraAnimationEvent);
+        EventManager.StartListening(Event.CAMERA_LOCK_EVENT, OnCameraLockEvent);
+        EventManager.StartListening(Event.CAMERA_UNLOCK_EVENT, OnCameraUnlockEvent);
         EventManager.StartListening(Event.PAWN_ANIMATION_EVENT, OnPawnAnimationEvent);
     }
 
@@ -51,9 +52,14 @@ public class PlayerInputManager : MonoBehaviour
     {
 
     }
-    private void OnCameraAnimationEvent(System.Collections.Generic.Dictionary<string, object> message)
+    private void OnCameraLockEvent(System.Collections.Generic.Dictionary<string, object> message)
     {
-        m_cameraIsLocked = !m_cameraIsLocked;
+        m_cameraIsLocked = true;
+    }
+
+    private void OnCameraUnlockEvent(System.Collections.Generic.Dictionary<string, object> message)
+    {
+        m_cameraIsLocked = false;
     }
 
     private void OnPawnAnimationEvent(System.Collections.Generic.Dictionary<string, object> message)

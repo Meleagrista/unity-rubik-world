@@ -5,7 +5,8 @@ using UnityEngine;
 public enum Event
 {
     INVALID_EVENT = -1,
-    CAMERA_ANIMATION_EVENT,
+    CAMERA_LOCK_EVENT,
+    CAMERA_UNLOCK_EVENT,
     PAWN_ANIMATION_EVENT,
 }
 

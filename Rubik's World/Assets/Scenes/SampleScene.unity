@@ -636,6 +636,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2035230070}
   - component: {fileID: 2035230071}
+  - component: {fileID: 2035230072}
   m_Layer: 0
   m_Name: SpringArm
   m_TagString: Untagged
@@ -672,6 +673,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Camera
   rotationSpeed: 4
+  returnDelay: 2
+  maximumRotation: 180
+--- !u!114 &2035230072
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2035230069}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01a5b02ce9c347e4e8c573c6a93571ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CameraInputManager
+  _deltaAction: {fileID: -2767324156023805167, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  _lockAction: {fileID: 265552244877951361, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  mouseSentitivity: 0.01
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
