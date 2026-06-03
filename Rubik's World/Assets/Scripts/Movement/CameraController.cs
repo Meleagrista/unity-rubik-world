@@ -61,9 +61,10 @@ public class CameraController : MonoBehaviour
         if (m_rotationCoroutine != null)
         {
             StopCoroutine(m_rotationCoroutine);
-
-            EventManager.TriggerEvent(Event.CAMERA_UNLOCK_EVENT, null);
         }
+
+        // Maybe too wasteful.
+        EventManager.TriggerEvent(Event.CAMERA_LOCK_EVENT, null);
 
         float forwardRotation = -input.y * maximumRotation;
         float sideRotation = -input.x * maximumRotation;
