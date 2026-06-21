@@ -5,7 +5,7 @@ using static UnityEngine.GraphicsBuffer;
 public class CameraController : MonoBehaviour
 {
     [SerializeField] private float rotationSpeed = 2.0f;
-    [SerializeField] private float returnDelay = 2.0f;
+    [SerializeField] private float returnDelay = 0.0f;
     [SerializeField] private float baseTilt = 40f;
     [SerializeField] private float maximumRotation = 180;
 
@@ -13,6 +13,7 @@ public class CameraController : MonoBehaviour
     private Quaternion m_originRotation;
     private Quaternion m_targetRotation;
     private Quaternion m_restRotation;
+    private Quaternion m_faceRotation;      // pawn orientation without tilt
 
     private float m_dragYaw = 0f;           // accumulated horizontal drag
     private float m_dragPitch = 0f;         // accumulated vertical drag
@@ -28,30 +29,33 @@ public class CameraController : MonoBehaviour
 
         m_originRotation = transform.rotation;
         m_targetRotation = transform.rotation;
+        m_restRotation   = transform.rotation;
+        m_faceRotation   = Quaternion.identity;
     }
 
     private IEnumerator _RotateTowards(float delayInSeconds = 0.0f)
     {
-        if (!(m_originRotation == m_targetRotation || m_rotationStart < 0))
+        if (delayInSeconds > 0f)
+            yield return new WaitForSeconds(delayInSeconds);
+
+        // Start timing after the delay, not before.
+        m_rotationStart = Time.time;    
+
+        if (m_originRotation != m_targetRotation)
         {
-            EventManager.TriggerEvent(Event.CAMERA_LOCK_EVENT, null);
-
-            new WaitForSeconds(delayInSeconds);
-
             while (transform.rotation != m_targetRotation)
             {
                 float t = (Time.time - m_rotationStart) * rotationSpeed;
                 transform.rotation = Quaternion.Slerp(m_originRotation, m_targetRotation, t);
-
                 yield return null;
             }
 
             m_originRotation = transform.rotation;
             m_rotationStart = -1.0f;
-
-            EventManager.TriggerEvent(Event.CAMERA_UNLOCK_EVENT, null);
         }
 
+        // One unlock per coroutine run, matches the one lock fired by the caller.
+        EventManager.TriggerEvent(Event.CAMERA_UNLOCK_EVENT, null);
         m_rotationCoroutine = null;
     }
 
@@ -59,19 +63,21 @@ public class CameraController : MonoBehaviour
     {
         m_originRotation = transform.rotation;
         m_targetRotation = target * m_baseRotation;
-        m_rotationStart = Time.time;
+        m_faceRotation   = target;
+        m_rotationStart  = Time.time;
 
-        if (m_rotationCoroutine != null) 
+        if (m_rotationCoroutine != null)
             StopCoroutine(m_rotationCoroutine);
 
+        EventManager.TriggerEvent(Event.CAMERA_LOCK_EVENT, null);
         m_rotationCoroutine = StartCoroutine(_RotateTowards());
     }
 
     public void Free()
     {
-        m_restRotation = transform.rotation;
-        m_dragYaw = 0;
-        m_dragPitch = 0;
+        m_restRotation = m_targetRotation;
+        m_dragYaw = 0f;
+        m_dragPitch = 0f;
     }
 
     public void Rotate(Vector2 input)
@@ -79,23 +85,24 @@ public class CameraController : MonoBehaviour
         if (m_rotationCoroutine != null)
             StopCoroutine(m_rotationCoroutine);
 
-        EventManager.TriggerEvent(Event.CAMERA_LOCK_EVENT, null);
+        m_dragYaw   = Mathf.Clamp(m_dragYaw   + input.x, -maximumRotation, maximumRotation);
+        m_dragPitch = Mathf.Clamp(m_dragPitch  + input.y, -maximumRotation - baseTilt, maximumRotation - baseTilt);
 
-        m_dragYaw = Mathf.Clamp(m_dragYaw + input.x, -maximumRotation, maximumRotation);
-        m_dragPitch = Mathf.Clamp(m_dragPitch + input.y, -maximumRotation - baseTilt, maximumRotation - baseTilt);
+        // Axes from face orientation (no tilt) so yaw stays flat to the face on all cube sides.
+        Vector3 yawAxis   = m_faceRotation * Vector3.up;
+        Vector3 pitchAxis = m_faceRotation * Vector3.right;
 
-        Quaternion yawRot = Quaternion.AngleAxis(m_dragYaw, Vector3.up);
-        Quaternion pitchRot = Quaternion.AngleAxis(m_dragPitch, Vector3.right);
-
-        transform.rotation = yawRot * pitchRot * m_restRotation;
+        transform.rotation = Quaternion.AngleAxis(m_dragYaw, yawAxis)
+                           * Quaternion.AngleAxis(m_dragPitch, pitchAxis)
+                           * m_restRotation;
     }
 
     public void Return()
     {
-        m_originRotation = transform.rotation;
-        m_rotationStart = Time.time;
+        m_originRotation = transform.rotation;  // snapshot where we are now
+        m_rotationStart = -1f;                  // will be set after the delay in the coroutine
 
-        if (m_rotationCoroutine != null) 
+        if (m_rotationCoroutine != null)
             StopCoroutine(m_rotationCoroutine);
 
         m_rotationCoroutine = StartCoroutine(_RotateTowards(returnDelay));

@@ -42,6 +42,7 @@ public class CameraInputManager : MonoBehaviour
         if (context.started)
         {
             m_isDragging = true;
+            EventManager.TriggerEvent(Event.CAMERA_LOCK_EVENT, null);
             k_cameraController.Free();
         }
 
