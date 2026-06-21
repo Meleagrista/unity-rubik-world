@@ -8,15 +8,15 @@ public class CameraInputManager : MonoBehaviour
     [SerializeField] private InputActionReference _deltaAction;
     [SerializeField] private InputActionReference _lockAction;
 
-    private CameraController k_camera;
+    private CameraController k_cameraController;
 
     private bool m_isDragging = false;
 
     private void Awake()
     {
-        k_camera = GetComponent<CameraController>();
+        k_cameraController = GetComponent<CameraController>();
 
-        if(k_camera == null )
+        if(k_cameraController == null )
         {
             throw new MissingComponentException("The camera is missing its camera component!");
         }
@@ -41,29 +41,27 @@ public class CameraInputManager : MonoBehaviour
     {
         if (context.started)
         {
-            // EventManager.TriggerEvent(Event.CAMERA_LOCK_EVENT, null);
             m_isDragging = true;
+            k_cameraController.Free();
         }
 
         if (context.canceled)
         {
             m_isDragging = false;
-            k_camera.Return();
+            k_cameraController.Return();
         }
     }
 
     private void OnDelta(InputAction.CallbackContext context)
     {
         if (!m_isDragging)
-        {
             return;
-        }
 
         Vector2 input = context.ReadValue<Vector2>();
 
         input *= 0.05f;
         input *= mouseSentitivity;
 
-        k_camera.Rotate(input);
+        k_cameraController.Rotate(input);
     }
 }

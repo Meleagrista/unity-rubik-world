@@ -6,9 +6,16 @@ public class CameraController : MonoBehaviour
 {
     [SerializeField] private float rotationSpeed = 2.0f;
     [SerializeField] private float returnDelay = 2.0f;
+    [SerializeField] private float baseTilt = 40f;
+    [SerializeField] private float maximumRotation = 180;
 
+    private Quaternion m_baseRotation;
     private Quaternion m_originRotation;
     private Quaternion m_targetRotation;
+    private Quaternion m_restRotation;
+
+    private float m_dragYaw = 0f;           // accumulated horizontal drag
+    private float m_dragPitch = 0f;         // accumulated vertical drag
 
     private float m_rotationStart = -1.0f;
 
@@ -16,6 +23,9 @@ public class CameraController : MonoBehaviour
 
     private void Start()
     {
+        m_baseRotation = Quaternion.Euler(baseTilt, 0f, 0f);
+        transform.rotation = m_baseRotation;
+
         m_originRotation = transform.rotation;
         m_targetRotation = transform.rotation;
     }
@@ -48,37 +58,45 @@ public class CameraController : MonoBehaviour
     public void RotateTowards(Quaternion target)
     {
         m_originRotation = transform.rotation;
-        m_targetRotation = target;
+        m_targetRotation = target * m_baseRotation;
         m_rotationStart = Time.time;
+
+        if (m_rotationCoroutine != null) 
+            StopCoroutine(m_rotationCoroutine);
 
         m_rotationCoroutine = StartCoroutine(_RotateTowards());
     }
 
-    [SerializeField] private float maximumRotation = 180;
+    public void Free()
+    {
+        m_restRotation = transform.rotation;
+        m_dragYaw = 0;
+        m_dragPitch = 0;
+    }
 
     public void Rotate(Vector2 input)
     {
         if (m_rotationCoroutine != null)
-        {
             StopCoroutine(m_rotationCoroutine);
-        }
 
-        // Maybe too wasteful.
         EventManager.TriggerEvent(Event.CAMERA_LOCK_EVENT, null);
 
-        float forwardRotation = -input.y * maximumRotation;
-        float sideRotation = -input.x * maximumRotation;
+        m_dragYaw = Mathf.Clamp(m_dragYaw + input.x, -maximumRotation, maximumRotation);
+        m_dragPitch = Mathf.Clamp(m_dragPitch + input.y, -maximumRotation - baseTilt, maximumRotation - baseTilt);
 
-        transform.Rotate(new Vector3(1, 0, 0), forwardRotation);
-        transform.Rotate(new Vector3(0, 0, 1), sideRotation, Space.World);
+        Quaternion yawRot = Quaternion.AngleAxis(m_dragYaw, Vector3.up);
+        Quaternion pitchRot = Quaternion.AngleAxis(m_dragPitch, Vector3.right);
 
-        // TODO Check whether the rotation has reached the limit.
+        transform.rotation = yawRot * pitchRot * m_restRotation;
     }
 
     public void Return()
     {
         m_originRotation = transform.rotation;
         m_rotationStart = Time.time;
+
+        if (m_rotationCoroutine != null) 
+            StopCoroutine(m_rotationCoroutine);
 
         m_rotationCoroutine = StartCoroutine(_RotateTowards(returnDelay));
     }
