@@ -8,42 +8,30 @@ public enum Event
     CAMERA_LOCK_EVENT,
     CAMERA_UNLOCK_EVENT,
     PAWN_ANIMATION_EVENT,
+    LEVEL_LOAD_EVENT,
+    GAME_STARTED_EVENT,
+    GAME_WIN_EVENT,
+    GAME_LOSE_EVENT,
+    GAME_PAUSE_EVENT,
+    GAME_RESUME_EVENT,
 }
 
 public class EventManager : MonoBehaviour
 {
     private Dictionary<Event, Action<Dictionary<string, object>>> eventDictionary;
 
-    private static EventManager eventManager;
-
-    public static EventManager instance
+    private static EventManager instance;
+    void Awake()
     {
-        get
+        if (instance != null)
         {
-            if (!eventManager)
-            {
-                eventManager = FindFirstObjectByType(typeof(EventManager)) as EventManager;
-
-                if (!eventManager)
-                {
-                    Debug.LogError("There needs to be one active EventManager script on a GameObject in your scene.");
-                }
-                else
-                {
-                    eventManager.Init();
-                    DontDestroyOnLoad(eventManager);
-                }
-            }
-            return eventManager;
+            Destroy(gameObject);
+            return;
         }
-    }
 
-    void Init()
-    {
-        if (eventDictionary == null)
-        {
-            eventDictionary = new Dictionary<Event, Action<Dictionary<string, object>>>();
-        }
+        instance = this;
+        eventDictionary = new Dictionary<Event, Action<Dictionary<string, object>>>();
+        DontDestroyOnLoad(gameObject);
     }
 
     public static void StartListening(Event eventName, Action<Dictionary<string, object>> listener)
@@ -64,7 +52,9 @@ public class EventManager : MonoBehaviour
 
     public static void StopListening(Event eventName, Action<Dictionary<string, object>> listener)
     {
-        if (eventManager == null) return;
+        if (instance == null) 
+            return;
+
         Action<Dictionary<string, object>> thisEvent;
         if (instance.eventDictionary.TryGetValue(eventName, out thisEvent))
         {
