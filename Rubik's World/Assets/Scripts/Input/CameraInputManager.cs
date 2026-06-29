@@ -33,10 +33,6 @@ public class CameraInputManager : MonoBehaviour
         _lockAction.action.canceled -= OnLock;
     }
 
-    [SerializeField]
-    // TODO Clamp this shit.
-    private float mouseSentitivity = 0.01f;
-
     private void OnLock(InputAction.CallbackContext context)
     {
         if (context.started)
@@ -61,7 +57,7 @@ public class CameraInputManager : MonoBehaviour
         Vector2 input = context.ReadValue<Vector2>();
 
         input *= 0.05f;
-        input *= mouseSentitivity;
+        input *= UserSettingsSO.Instance.mouseSensitivity;
 
         k_cameraController.Rotate(input);
     }

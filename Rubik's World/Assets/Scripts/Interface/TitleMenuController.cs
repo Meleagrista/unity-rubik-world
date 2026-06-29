@@ -4,8 +4,6 @@ using UnityEngine.UIElements;
 
 public class TitleMenuController : MonoBehaviour
 {
-    [SerializeField] private LevelListSO levelList;
-
     private UIDocument document;
 
     // TODO Add safety checks
@@ -19,7 +17,7 @@ public class TitleMenuController : MonoBehaviour
     {
         EventManager.TriggerEvent(Event.LEVEL_LOAD_EVENT, new Dictionary<string, object>
         {
-            { "sceneName", levelList.levels[0] }
+            { "sceneName", LevelListSO.Instance.levels[0] }
         });
     }
 }

@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "UserSettings", menuName = "Game/User Settings")]
-public class UserSettingsSO : ScriptableObject
+public class UserSettingsSO : SingletonScriptableObject<UserSettingsSO>
 {
     public float mouseSensitivity = 1f;
 }
