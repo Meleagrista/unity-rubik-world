@@ -46,6 +46,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07196c49192685d4baf01a09b8804d40, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Pawn
+  _currentTile: {fileID: 0}
 --- !u!114 &7604122271982449685
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -59,6 +60,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerInputManager
   _moveAction: {fileID: -1680190386980627800, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  _undoAction: {fileID: -5499567852716384917, guid: 052faaac586de48259a63d0c4782560b, type: 3}
 --- !u!1 &8639951923815872736
 GameObject:
   m_ObjectHideFlags: 0

@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbb457723b1962940ace507bff5b05be, type: 3}
   m_Name: UserSettingsSO
   m_EditorClassIdentifier: Assembly-CSharp::UserSettingsSO
-  mouseSensitivity: 1
+  mouseSensitivity: 4

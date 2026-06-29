@@ -106,6 +106,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerInputManager
   _moveAction: {fileID: -1680190386980627800, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  _undoAction: {fileID: -5499567852716384917, guid: 052faaac586de48259a63d0c4782560b, type: 3}
 --- !u!1 &8639951923815872736
 GameObject:
   m_ObjectHideFlags: 0

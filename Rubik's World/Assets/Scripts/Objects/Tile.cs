@@ -4,7 +4,7 @@ using UnityEngine;
 public class Tile : MonoBehaviour
 {
     [Header("Properties")]
-    [SerializeField] private bool isVisited = false;
+    [SerializeField] private int isVisited = 0;
     [SerializeField] private Transform position;
 
     [Header("Neighbors")]
@@ -13,12 +13,26 @@ public class Tile : MonoBehaviour
     [SerializeField] private Tile left;
     [SerializeField] private Tile right;
 
+    private MeshRenderer k_meshRenderer;
+    private Material k_originalMaterial;
+
     [Header("Feedback")]
     [SerializeField] private Material visitedMaterial;
 
-    public void SetVisited() { isVisited = true; }
 
-    public bool GetVisited() => isVisited;
+    private void Awake()
+    {
+        k_meshRenderer = GetComponentInChildren<MeshRenderer>();
+        k_originalMaterial = k_meshRenderer.material;
+    }
+
+    public void SetVisited(bool isForward = true) 
+    { 
+        isVisited = isForward ? isVisited + 1 : isVisited - 1;
+
+        if (isVisited < 0)
+            throw new ArgumentOutOfRangeException("A tile cannot be visited less than zero times.");
+    }
 
     public Transform GetPosition() => position;
 
@@ -44,88 +58,17 @@ public class Tile : MonoBehaviour
         }
     }
 
-    /* CUBE FUNCTIONS */
-
-    [ContextMenu("Detect")]
-    public void DetectAdjacentTiles()
-    {
-        forward = null;
-        backward = null;
-        right = null;
-        left = null;
-
-        var directions = Enum.GetValues(typeof(Direction));
-        foreach (Direction direction in directions)
-        {
-            DetectAdjacentTile(direction);
-        }
-    }
-
-    private void DetectAdjacentTile(Direction direction)
-    {
-        RaycastHit hit;
-
-        Ray ray;
-        Color color = Color.white;
-
-        switch (direction)
-        {
-            case Direction.FORWARD: 
-                ray = new Ray(transform.position, transform.forward);
-                color = Color.red;
-                break;
-            case Direction.BACKWARD:
-                ray = new Ray(transform.position, -transform.forward);
-                break;
-            case Direction.RIGHT:
-                ray = new Ray(transform.position, transform.right);
-                break;
-            case Direction.LEFT:
-                ray = new Ray(transform.position, -transform.right);
-                color = Color.blue;
-                break;
-            default:
-                throw new NotSupportedException("The direction was not recognized.");
-        }
-
-        Debug.DrawRay(ray.origin, ray.direction * 2, color, 1);
-
-        if (Physics.Raycast(ray, out hit, 2))
-        {
-            Tile tile = hit.collider.GetComponentInParent<Tile>();
-
-            switch (direction)
-            {
-                case Direction.FORWARD:
-                    forward = tile;
-                    break;
-                case Direction.BACKWARD:
-                    backward = tile;
-                    break;
-                case Direction.RIGHT:
-                    right = tile;
-                    break;
-                case Direction.LEFT:
-                    left = tile;
-                    break;
-                default:
-                    throw new NotSupportedException("The direction was not recognized.");
-            }
-        }
-    }
-
     /* PROVISIONAL FUNCTIONS */
 
     public void UpdateTile()
     {
-        if (isVisited)
+        if (isVisited > 0)
         {
-            MeshRenderer mesh = GetComponentInChildren<MeshRenderer>();
-
-            if (mesh)
-            {
-                mesh.material = visitedMaterial;
-            }  
+            k_meshRenderer.material = visitedMaterial;
+        }
+        else
+        {
+            k_meshRenderer.material = k_originalMaterial;
         }
     }
 }

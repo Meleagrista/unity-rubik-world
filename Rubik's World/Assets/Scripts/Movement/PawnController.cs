@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class PawnController : MonoBehaviour
@@ -6,6 +7,10 @@ public class PawnController : MonoBehaviour
     [SerializeField] private Tile _currentTile;
 
     private CameraController k_camera;
+
+    private readonly MoveLog m_moveLog = new MoveLog();
+
+    // public IReadOnlyList<MoveRecord> MoveHistory => m_moveLog.Records;
 
     private void Start()
     {
@@ -52,13 +57,32 @@ public class PawnController : MonoBehaviour
         }
     
         MovePawn(_nextTile);
-        RotatePawn(_nextTile, direction);
+        RotatePawn(_currentTile, _nextTile);
 
         _nextTile.SetVisited();
         _nextTile.UpdateTile();
 
+        m_moveLog.Record(new MoveRecord(direction, _currentTile, _nextTile));
+
         _currentTile = _nextTile;
     }
+
+    public void Undo()
+    {
+        if (!m_moveLog.TryPop(out MoveRecord record))
+        {
+            return;
+        }
+
+        MovePawn(record.FromTile);
+        RotatePawn(record.ToTile, record.FromTile);
+
+        _currentTile = record.FromTile;
+
+        record.ToTile.SetVisited(false);
+        record.ToTile.UpdateTile();
+    }
+
     private void MovePawn(Tile tile)
     {
         EventManager.TriggerEvent(Event.PAWN_ANIMATION_EVENT, null);
@@ -70,10 +94,10 @@ public class PawnController : MonoBehaviour
         EventManager.TriggerEvent(Event.PAWN_ANIMATION_EVENT, null);
     }
 
-    private void RotatePawn(Tile tile, Direction direction)
+    private void RotatePawn(Tile fromTile, Tile toTile)
     {
-        Vector3 currentNormal = _currentTile.transform.up;
-        Vector3 nextNormal = tile.GetPosition().transform.up;
+        Vector3 currentNormal = fromTile.transform.up;
+        Vector3 nextNormal = toTile.GetPosition().transform.up;
 
         Quaternion cornerRotation = Quaternion.FromToRotation(currentNormal, nextNormal);
         Quaternion pawnRotation = cornerRotation * transform.rotation;

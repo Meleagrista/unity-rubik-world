@@ -5,6 +5,7 @@ public class PlayerInputManager : MonoBehaviour
 {
     [Header("Input References")]
     [SerializeField] private InputActionReference _moveAction;
+    [SerializeField] private InputActionReference _undoAction;
 
     private PawnController k_pawn;
 
@@ -23,6 +24,9 @@ public class PlayerInputManager : MonoBehaviour
         _moveAction.action.performed += OnMovePerformed;
         _moveAction.action.canceled += OnMoveCanceled;
 
+        _undoAction.action.performed += OnUndoPerformed;
+        _undoAction.action.canceled += OnUndoCanceled;
+
         EventManager.StartListening(Event.CAMERA_LOCK_EVENT, OnCameraLockEvent);
         EventManager.StartListening(Event.CAMERA_UNLOCK_EVENT, OnCameraUnlockEvent);
         EventManager.StartListening(Event.PAWN_ANIMATION_EVENT, OnPawnAnimationEvent);
@@ -32,6 +36,9 @@ public class PlayerInputManager : MonoBehaviour
     {
         _moveAction.action.performed -= OnMovePerformed;
         _moveAction.action.canceled -= OnMoveCanceled;
+
+        _undoAction.action.performed -= OnUndoPerformed;
+        _undoAction.action.canceled -= OnUndoCanceled;
     }
 
     private void OnMovePerformed(InputAction.CallbackContext context)
@@ -52,11 +59,26 @@ public class PlayerInputManager : MonoBehaviour
     {
 
     }
+
+    private void OnUndoPerformed(InputAction.CallbackContext context)
+    {
+        if (m_cameraIsLocked || m_pawnIsLocked)
+        {
+            return;
+        }
+
+        k_pawn.Undo();
+    }
+
+    private void OnUndoCanceled(InputAction.CallbackContext context)
+    {
+
+    }
+
     private void OnCameraLockEvent(System.Collections.Generic.Dictionary<string, object> message)
     {
         m_cameraIsLocked = true;
     }
-
     private void OnCameraUnlockEvent(System.Collections.Generic.Dictionary<string, object> message)
     {
         m_cameraIsLocked = false;
