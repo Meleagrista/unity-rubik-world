@@ -54,8 +54,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4482938437895452901}
-  - component: {fileID: 1351532590464549050}
   - component: {fileID: 1073714270229848472}
+  - component: {fileID: 4277046842423851693}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -80,19 +80,6 @@ Transform:
   - {fileID: 2556874577447486741}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1351532590464549050
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7786638049861719168}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 07196c49192685d4baf01a09b8804d40, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Pawn
-  _currentTile: {fileID: 0}
 --- !u!114 &1073714270229848472
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -107,6 +94,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerInputManager
   _moveAction: {fileID: -1680190386980627800, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   _undoAction: {fileID: -5499567852716384917, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+--- !u!114 &4277046842423851693
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7786638049861719168}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a8c9b0fa55f79e84ab6da3014a5cb1b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerController
+  _currentTile: {fileID: 0}
 --- !u!1 &8639951923815872736
 GameObject:
   m_ObjectHideFlags: 0

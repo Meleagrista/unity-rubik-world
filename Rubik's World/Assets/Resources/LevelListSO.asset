@@ -12,5 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9dba83b9b4adda549b253c26b64bc046, type: 3}
   m_Name: LevelListSO
   m_EditorClassIdentifier: Assembly-CSharp::LevelListSO
+  titleScene: TitleScene
   levels:
   - SampleScene

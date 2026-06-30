@@ -1,0 +1,6 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:VisualElement name="root" style="flex-grow: 1; align-content: auto; align-items: auto; justify-content: center; align-self: auto; background-color: rgba(0, 0, 0, 0.5);">
+        <ui:Label text="You lose" name="message-label" style="-unity-text-align: upper-center; font-size: 100%; -unity-font-definition: url(&quot;project://database/Assets/Interface/Fonts/edit-undo/editundo.ttf?fileID=12800000&amp;guid=705ddb52a8992ac4796777383bf4d5c5&amp;type=3#editundo&quot;); color: rgb(255, 255, 255); -unity-text-outline-width: 4px; -unity-text-outline-color: rgb(0, 0, 0); align-content: auto; justify-content: center; align-items: auto; align-self: center;"/>
+        <ui:Button text="Go back to menu" name="menu-button" style="align-self: stretch; -unity-font-definition: url(&quot;project://database/Assets/Interface/Fonts/edit-undo/editundo.ttf?fileID=12800000&amp;guid=705ddb52a8992ac4796777383bf4d5c5&amp;type=3#editundo&quot;); font-size: 50%; color: rgb(128, 128, 128);"/>
+    </ui:VisualElement>
+</ui:UXML>

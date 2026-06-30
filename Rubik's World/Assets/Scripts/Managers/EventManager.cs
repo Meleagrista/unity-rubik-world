@@ -8,6 +8,9 @@ public enum Event
     CAMERA_LOCK_EVENT,
     CAMERA_UNLOCK_EVENT,
     PAWN_ANIMATION_EVENT,
+    PAWN_ACTION_EVENT,
+    TILE_VISITED_EVENT,
+    TILE_UNVISITED_EVENT,
     LEVEL_LOAD_EVENT,
     GAME_STARTED_EVENT,
     GAME_WIN_EVENT,
@@ -68,7 +71,7 @@ public class EventManager : MonoBehaviour
         Action<Dictionary<string, object>> thisEvent = null;
         if (instance.eventDictionary.TryGetValue(eventName, out thisEvent))
         {
-            thisEvent.Invoke(message);
+            thisEvent?.Invoke(message);
         }
     }
 }

@@ -1,6 +1,6 @@
 <ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <ui:VisualElement name="root" style="flex-grow: 1; justify-content: center;">
         <ui:Label text="Label" name="title-label" style="-unity-font-definition: url(&quot;project://database/Assets/Interface/Fonts/edit-undo/editundo.ttf?fileID=12800000&amp;guid=705ddb52a8992ac4796777383bf4d5c5&amp;type=3#editundo&quot;); -unity-text-align: upper-center; color: rgb(255, 255, 255); font-size: 100%; -unity-text-outline-width: 4px; -unity-text-outline-color: rgb(0, 0, 0);"/>
-        <ui:Button text="Start" name="start-button" style="-unity-font-definition: url(&quot;project://database/Assets/Interface/Fonts/edit-undo/editundo.ttf?fileID=12800000&amp;guid=705ddb52a8992ac4796777383bf4d5c5&amp;type=3#editundo&quot;); font-size: 50%;"/>
+        <ui:Button text="Start" name="start-button" style="-unity-font-definition: url(&quot;project://database/Assets/Interface/Fonts/edit-undo/editundo.ttf?fileID=12800000&amp;guid=705ddb52a8992ac4796777383bf4d5c5&amp;type=3#editundo&quot;); font-size: 50%; color: rgb(128, 128, 128);"/>
     </ui:VisualElement>
 </ui:UXML>

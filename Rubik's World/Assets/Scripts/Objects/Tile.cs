@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Tile : MonoBehaviour
@@ -26,12 +27,29 @@ public class Tile : MonoBehaviour
         k_originalMaterial = k_meshRenderer.material;
     }
 
-    public void SetVisited(bool isForward = true) 
-    { 
+    public void SetVisited(bool isForward = true)
+    {
+        int previousVisited = isVisited;
+
         isVisited = isForward ? isVisited + 1 : isVisited - 1;
 
         if (isVisited < 0)
             throw new ArgumentOutOfRangeException("A tile cannot be visited less than zero times.");
+
+        if (previousVisited == 0 && isVisited > 0)
+        {
+            EventManager.TriggerEvent(Event.TILE_VISITED_EVENT, new Dictionary<string, object>
+            {
+                { "tile", this }
+            });
+        }
+        else if (previousVisited > 0 && isVisited == 0)
+        {
+            EventManager.TriggerEvent(Event.TILE_UNVISITED_EVENT, new Dictionary<string, object>
+            {
+                { "tile", this }
+            });
+        }
     }
 
     public Transform GetPosition() => position;

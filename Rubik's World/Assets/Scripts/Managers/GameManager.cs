@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
+    
     void Awake()
     {
         if (Instance != null)
@@ -19,7 +20,7 @@ public class GameManager : MonoBehaviour
         EventManager.StartListening(Event.LEVEL_LOAD_EVENT, OnLoadLevel);
     }
     void OnDestroy() => EventManager.StopListening(Event.LEVEL_LOAD_EVENT, OnLoadLevel);
-
+    
     private void OnLoadLevel(Dictionary<string, object> msg)
     {
         string sceneName = (string)msg["sceneName"];

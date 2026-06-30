@@ -11,6 +11,7 @@ public class CameraInputManager : MonoBehaviour
     private CameraController k_cameraController;
 
     private bool m_isDragging = false;
+    private bool m_gameEnded = false;
 
     private void Awake()
     {
@@ -24,6 +25,10 @@ public class CameraInputManager : MonoBehaviour
         _deltaAction.action.performed += OnDelta;
         _lockAction.action.started += OnLock;
         _lockAction.action.canceled += OnLock;
+
+        EventManager.StartListening(Event.GAME_WIN_EVENT, OnGameEnded);
+        EventManager.StartListening(Event.GAME_LOSE_EVENT, OnGameEnded);
+        EventManager.StartListening(Event.GAME_STARTED_EVENT, OnGameStarted);
     }
 
     private void OnDestroy()
@@ -31,10 +36,19 @@ public class CameraInputManager : MonoBehaviour
         _deltaAction.action.performed -= OnDelta;
         _lockAction.action.started -= OnLock;
         _lockAction.action.canceled -= OnLock;
+
+        EventManager.StopListening(Event.GAME_WIN_EVENT, OnGameEnded);
+        EventManager.StopListening(Event.GAME_LOSE_EVENT, OnGameEnded);
+        EventManager.StopListening(Event.GAME_STARTED_EVENT, OnGameStarted);
     }
 
     private void OnLock(InputAction.CallbackContext context)
     {
+        if (m_gameEnded)
+        {
+            return;
+        }
+
         if (context.started)
         {
             m_isDragging = true;
@@ -51,7 +65,7 @@ public class CameraInputManager : MonoBehaviour
 
     private void OnDelta(InputAction.CallbackContext context)
     {
-        if (!m_isDragging)
+        if (m_gameEnded || !m_isDragging)
             return;
 
         Vector2 input = context.ReadValue<Vector2>();
@@ -60,5 +74,15 @@ public class CameraInputManager : MonoBehaviour
         input *= UserSettingsSO.Instance.mouseSensitivity;
 
         k_cameraController.Rotate(input);
+    }
+
+    private void OnGameEnded(System.Collections.Generic.Dictionary<string, object> message)
+    {
+        m_gameEnded = true;
+    }
+
+    private void OnGameStarted(System.Collections.Generic.Dictionary<string, object> message)
+    {
+        m_gameEnded = false;
     }
 }
